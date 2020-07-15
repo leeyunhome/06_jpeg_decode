@@ -162,18 +162,21 @@ jpeg_decode_proc(context_t& ctx, int argc, char *argv[])
        * Decode to software buffer memory by decodeToBuffer() and write to
        * local file.
        */
+
       if (!ctx.use_fd)
       {
+
         NvBuffer *buffer;
 
         for (int i = 0; i < iterator_num; ++i)
         {
+
           ret = ctx.jpegdec->decodeToBuffer(&buffer, ctx.in_buffer,
                 ctx.in_file_size, &pixfmt, &width, &height);
           TEST_ERROR(ret < 0, "Could not decode image", cleanup);
         }
 
-        cout << "Image Resolution - " << width << " x " << height << endl;
+        cout << "Image Resolution - " << width << " x " << height << __LINE__ << endl;
         write_video_frame(ctx.out_file[i], *buffer);
         delete buffer;
         goto cleanup;
@@ -189,13 +192,12 @@ jpeg_decode_proc(context_t& ctx, int argc, char *argv[])
 
       for (int i = 0; i < iterator_num; ++i)
       {
-        std::cout << __FUNCTION__ << " " << __LINE__ << std::endl;
         ret = ctx.jpegdec->decodeToFd(fd, ctx.in_buffer, ctx.in_file_size, pixfmt,
             width, height);
         TEST_ERROR(ret < 0, "Could not decode image", cleanup);
       }
 
-      cout << "Image Resolution - " << width << " x " << height << endl;
+      cout << "Image Resolution - " << width << " x " << height << __LINE__ << endl;
 
       ret = ctx.conv->setCropRect(0, 0, width, height);
       TEST_ERROR(ret < 0, "Could not set crop rect for conv0", cleanup);
