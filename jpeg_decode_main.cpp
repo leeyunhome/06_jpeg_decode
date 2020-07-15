@@ -36,8 +36,15 @@
 
 #include "jpeg_decode.h"
 
-#include "NvEglRenderer.h"
-#include "typeinfo"
+///////////////////////////////////////////
+///////////////////////////////////////////
+
+#include "NvEglRenderer.h"        // NvEglRenderer를 사용하기 위해 선언
+#include "typeinfo"               // NvBuffer 타입 체크를 위해 선언(디버깅 용도)
+
+///////////////////////////////////////////
+///////////////////////////////////////////
+
 
 #define TEST_ERROR(cond, str, label) if(cond) { \
                                         cerr << str << endl; \
@@ -45,8 +52,14 @@
                                         goto label; }
 
 #define PERF_LOOP   300
-NvEglRenderer *renderer;
+///////////////////////////////////////////
+///////////////////////////////////////////
 
+NvEglRenderer *renderer;
+#define GLFW_DISPLAY  // 추후에 GLFW를 이용한 재생 테스트할 때 사용
+
+///////////////////////////////////////////
+///////////////////////////////////////////
 using namespace std;
 
 static void
@@ -56,15 +69,12 @@ abort(context_t * ctx)
     ctx->conv->abort();
 }
 
-//////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////
-int write_nvvideo( NvBuffer &buffer )
-{
-  uint32_t i, j;
-  char *data;
-	char *tmp;
-	int size_index = 0;
+///////////////////////////////////////////
+///////////////////////////////////////////
 
+// jpeg_render 파라미터 타입 : NvBuffer
+int jpeg_render( NvBuffer &buffer )
+{
   delete renderer;
   renderer = NvEglRenderer::createEglRenderer("renderer0", 1920, 1080, 0, 0);
   renderer->render(buffer.planes[0].fd);
@@ -72,6 +82,9 @@ int write_nvvideo( NvBuffer &buffer )
 
   return 0;
 }
+
+///////////////////////////////////////////
+///////////////////////////////////////////
 
 /**
  * Callback function called after capture plane dqbuffer of NvVideoConverter class.
@@ -101,7 +114,8 @@ conv_capture_dqbuf_thread_callback(struct v4l2_buffer *v4l2_buf,
     }
     std::cout << "buffer->planes[0].fd : " << buffer->planes[0].fd << std::endl;
 
-    write_nvvideo(*buffer);
+    jpeg_render(*buffer);                                             // jpeg 재생을 위한 함수 호출(인자타입 : NvBuffer)
+
     write_video_frame(ctx->out_file[ctx->current_file++], *buffer);
     return false;
 }
