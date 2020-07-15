@@ -36,12 +36,16 @@
 
 #include "jpeg_decode.h"
 
+#include "NvEglRenderer.h"
+#include "typeinfo"
+
 #define TEST_ERROR(cond, str, label) if(cond) { \
                                         cerr << str << endl; \
                                         error = 1; \
                                         goto label; }
 
 #define PERF_LOOP   300
+NvEglRenderer *renderer;
 
 using namespace std;
 
@@ -50,6 +54,23 @@ abort(context_t * ctx)
 {
     ctx->got_error = true;
     ctx->conv->abort();
+}
+
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+int write_nvvideo( NvBuffer &buffer )
+{
+  uint32_t i, j;
+  char *data;
+	char *tmp;
+	int size_index = 0;
+
+  delete renderer;
+  renderer = NvEglRenderer::createEglRenderer("renderer0", 1920, 1080, 0, 0);
+  // renderer->render(buffer.planes[0].fd);
+  std::cout << "typeid : " << typeid(buffer).name() << std::endl;
+
+  return 0;
 }
 
 /**
@@ -78,7 +99,9 @@ conv_capture_dqbuf_thread_callback(struct v4l2_buffer *v4l2_buf,
         abort(ctx);
         return false;
     }
+    std::cout << "buffer->planes[0].fd : " << buffer->planes[0].fd << std::endl;
 
+    write_nvvideo(*buffer);
     write_video_frame(ctx->out_file[ctx->current_file++], *buffer);
     return false;
 }
@@ -176,7 +199,7 @@ jpeg_decode_proc(context_t& ctx, int argc, char *argv[])
           TEST_ERROR(ret < 0, "Could not decode image", cleanup);
         }
 
-        cout << "Image Resolution_buffer - " << width << " x " << height << __LINE__ << endl;
+        cout << "Image Resolution_buffer - " << width << " x " << height << " " << __LINE__ << endl;
         write_video_frame(ctx.out_file[i], *buffer);
         delete buffer;
         goto cleanup;
@@ -197,7 +220,7 @@ jpeg_decode_proc(context_t& ctx, int argc, char *argv[])
         TEST_ERROR(ret < 0, "Could not decode image", cleanup);
       }
 
-      cout << "Image Resolution_Fd - " << width << " x " << height << __LINE__ << endl;
+      cout << "Image Resolution_Fd - " << width << " x " << height << " " << __LINE__ << endl;
 
       ret = ctx.conv->setCropRect(0, 0, width, height);
       TEST_ERROR(ret < 0, "Could not set crop rect for conv0", cleanup);
