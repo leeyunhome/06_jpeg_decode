@@ -189,6 +189,7 @@ jpeg_decode_proc(context_t& ctx, int argc, char *argv[])
 
       for (int i = 0; i < iterator_num; ++i)
       {
+        std::cout << __FUNC__ << " " << __LINE__ << std::endl;
         ret = ctx.jpegdec->decodeToFd(fd, ctx.in_buffer, ctx.in_file_size, pixfmt,
             width, height);
         TEST_ERROR(ret < 0, "Could not decode image", cleanup);
