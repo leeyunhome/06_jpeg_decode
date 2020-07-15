@@ -176,7 +176,7 @@ jpeg_decode_proc(context_t& ctx, int argc, char *argv[])
           TEST_ERROR(ret < 0, "Could not decode image", cleanup);
         }
 
-        cout << "Image Resolution - " << width << " x " << height << __LINE__ << endl;
+        cout << "Image Resolution_buffer - " << width << " x " << height << __LINE__ << endl;
         write_video_frame(ctx.out_file[i], *buffer);
         delete buffer;
         goto cleanup;
@@ -197,7 +197,7 @@ jpeg_decode_proc(context_t& ctx, int argc, char *argv[])
         TEST_ERROR(ret < 0, "Could not decode image", cleanup);
       }
 
-      cout << "Image Resolution - " << width << " x " << height << __LINE__ << endl;
+      cout << "Image Resolution_Fd - " << width << " x " << height << __LINE__ << endl;
 
       ret = ctx.conv->setCropRect(0, 0, width, height);
       TEST_ERROR(ret < 0, "Could not set crop rect for conv0", cleanup);
