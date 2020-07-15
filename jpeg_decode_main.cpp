@@ -67,7 +67,7 @@ int write_nvvideo( NvBuffer &buffer )
 
   delete renderer;
   renderer = NvEglRenderer::createEglRenderer("renderer0", 1920, 1080, 0, 0);
-  // renderer->render(buffer.planes[0].fd);
+  renderer->render(buffer.planes[0].fd);
   std::cout << "typeid : " << typeid(buffer).name() << std::endl;
 
   return 0;
